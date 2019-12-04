@@ -20,7 +20,7 @@ def get_all_events():
     # print(request.cookies)
     ## find the issues and change each one to a dictionary into a new array
     
-    print('Current User:',  current_user, "line 23", '\n')
+    # print('Current User:',  current_user, "line 23", '\n')
     # Send all issues back to client. There is no valid reason for this not to work
     # so we don't use a try -> except.
     # IMPORTANT -> Use max_depth=0 if we want just the issue created_by id and not the entire
@@ -39,21 +39,21 @@ def get_all_events():
 # Create/New Route (post)
 # @login_required <- look this up to save writing some code https://flask-login.readthedocs.io/en/latest/#flask_login.login_required
 @event.route('/', methods=["POST"])
-def create_issues():
+def create_event():
     ## see request payload analogous to req.body in express
     payload = request.get_json() # flask gives us a request object (similar to req.body)
     print(type(payload), 'payload')
     
     #adding authorization step here...
-    if not current_user.is_authenticated: # Check if user is authenticated and allowed to create a new issue
-        print(current_user)
-        return jsonify(data={}, status={'code': 401, 'message': 'You must be logged in to create an issue'})
+    # if not current_user.is_authenticated: # Check if user is authenticated and allowed to create a new issue
+    #     print(current_user)
+    #     return jsonify(data={}, status={'code': 401, 'message': 'You must be logged in to create an issue'})
 
-    payload['created_by'] = current_user.id # Set the 'created_by' of the issue to the current user
-    print(payload['created_by'], 'created by current user id')
+    # payload['created_by'] = current_user.id # Set the 'created_by' of the issue to the current user
+    # print(payload['created_by'], 'created by current user id')
    
-    print(payload, 'line 56')
-    issue = models.Issue.create(**payload) ## ** spread operator
+    # print(payload, 'line 56')
+    event = models.Event.create(**payload) ## ** spread operator
     # returns the id, see print(event)
 
     ## see the object
@@ -68,23 +68,23 @@ def create_issues():
 
 
 # Show/Read Route (get)
-@event.route('/<event_id>', methods=["GET"])
+@event.route('/<id>', methods=["GET"])
 def get_one_event(id):
     # print(id)
     try:
         # Try to find event with a certain id
-        issue = model_to_dict(models.Event.get(id=event_id, max_depth=0))
-        return jsonify(issue)
+        event = model_to_dict(models.Event.get(id=id))
+        return jsonify(event)
     except models.DoesNotExist:
         # If the id does not match an id of an event in the database return 404 error
-        return jsonify(data={}, status={'code': 404, 'message': 'Issue not found'})
+        return jsonify(data={}, status={'code': 404, 'message': 'Event not found'})
 
    
 # Update/Edit Route (put)
 @event.route('/<id>', methods=["PUT"])
 def update_event(id):
     # print('hi')
-    # pdb.set_trace()
+    
     payload = request.get_json()
     # print(payload)
 
@@ -93,13 +93,13 @@ def update_event(id):
     # send back a 404 error because the 'issue' resource wasn't found.
     event_to_update = models.Event.get(id=id)
     print(event_to_update, "line96")
-    if not current_user.is_authenticated: # Checks if user is logged in
-        return jsonify(data={}, status={'code': 401, 'message': 'You must be logged in to edit an event'})
+    # if not current_user.is_authenticated: # Checks if user is logged in
+    #     return jsonify(data={}, status={'code': 401, 'message': 'You must be logged in to edit an event'})
 
-    if event_to_update.user.id is not current_user.id: 
-        # Checks if create_by (User) of issue has the same id as the logged in User.
-        # If the ids don't match send 401 - unauthorized back to user
-        return jsonify(data={}, status={'code': 401, 'message': 'You can only update an event you created'})
+    # if event_to_update.user.id is not current_user.id: 
+    #     # Checks if create_by (User) of issue has the same id as the logged in User.
+    #     # If the ids don't match send 401 - unauthorized back to user
+    #     return jsonify(data={}, status={'code': 401, 'message': 'You can only update an event you created'})
 
     # Given our form, we only want to update the subject of our issue
     # issue_to_update.update(
@@ -108,12 +108,14 @@ def update_event(id):
 
     #new code
     event_to_update.category = payload['category']
+    event_to_update.level = payload['level']
+
     event_to_update.save()
 
-    # Get a dictionary of the updated issue to send back to the client.
+    # Get a dictionary of the updated event to send back to the client.
     # Use max_depth=0 because we want just the created_by id and not the entire
     # created_by object sent back to the client. 
-    # update_issue_dict = model_to_dict(issue_to_update, max_depth=0)
+    # update_event_dict = model_to_dict(event_to_update, max_depth=0)
 
     # we want the entire object, so we are not going to use max_depth=0
     update_event_dict = model_to_dict(event_to_update)
@@ -126,16 +128,16 @@ def delete_event(id):
     # if we try to get an id that doesn't exist a 500 error will occur. Would 
     # send back a 404 error because the 'issue' resource wasn't found.
     event_to_delete = models.Event.get(id=id)
-    print(event_to_delete, 'line 130');
-    print(current_user, 'line 131');
-    if not current_user.is_authenticated: # Checks if user is logged in
-        return jsonify(data={}, status={'code': 401, 'message': 'You must be logged in to create an event'})
-    if issue_to_delete.created_by.id is not current_user.id: 
-        # Checks if created_by (User) of issue has the same id as the logged in User
-        # If the ids don't match send 401 - unauthorized back to user
-        return jsonify(data={}, status={'code': 401, 'message': 'You can only delete the event you created'})
+    print(event_to_delete, 'line 129');
+    # print(current_user, 'line 131');
+    # if not current_user.is_authenticated: # Checks if user is logged in
+    #     return jsonify(data={}, status={'code': 401, 'message': 'You must be logged in to create an event'})
+    # if issue_to_delete.created_by.id is not current_user.id: 
+    #     # Checks if created_by (User) of issue has the same id as the logged in User
+    #     # If the ids don't match send 401 - unauthorized back to user
+    #     return jsonify(data={}, status={'code': 401, 'message': 'You can only delete the event you created'})
     
-    # Delete the issue and send success response back to user
+    # Delete the event and send success response back to user
     query = models.Event.delete().where(models.Event.id==id)
     query.execute()
     print(event_to_delete, 'line 174');

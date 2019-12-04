@@ -27,8 +27,8 @@ class Tourney(Model):
 
 class Event(Model):
 	category = CharField()
-	level = DecimalField()
-	tourney = ForeignKeyField(Tourney, backref='events') 
+	level = CharField()
+	# tourney = ForeignKeyField(Tourney, backref='events') 
 	# user= ForeignKeyField(User, backref= 'events')	
 														
 	class Meta:
@@ -39,7 +39,7 @@ class User(UserMixin, Model):
 	name = CharField()
 	age = IntegerField()
 	gender = CharField()
-	rating = DecimalField()
+	rating = CharField()
 	events = ForeignKeyField(Event, backref= 'users')
 	# has 'events' through events foreign key
 	email = CharField(unique=True)
