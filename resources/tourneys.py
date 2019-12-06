@@ -20,7 +20,7 @@ def get_all_tourneys():
     # print(request.cookies)
     ## find the issues and change each one to a dictionary into a new array
     
-    print('Current User:',  current_user, "line 23", '\n')
+    # print('Current User:',  current_user, "line 23", '\n')
     # Send all issues back to client. 
     # IMPORTANT -> Use max_depth=0 if we want just the issue created_by id and not the entire
     # http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#model_to_dict
@@ -58,10 +58,9 @@ def create_tourney():
     print(dir(tourney))
     # Change the model to a dict
     print(model_to_dict(tourney), 'model to dict')
-    # tourney_dict = model_to_dict(tourney)
-    # return jsonify(data=tourney_dict, status={"code": 201, "message": "Success"})
-    message="reaching db"
-    return message
+    tourney_dict = model_to_dict(tourney)
+    return jsonify(data=tourney_dict, status={"code": 201, "message": "Success"})
+    
 
 # Show/Read Route (get)
 @tourney.route('/<tourney_id>', methods=["GET"])

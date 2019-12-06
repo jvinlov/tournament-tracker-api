@@ -1,4 +1,4 @@
-import os ##new for heroku
+import os # for heroku
 import datetime
 from peewee import *
 from flask_login import UserMixin
@@ -28,6 +28,8 @@ class Tourney(Model):
 class Event(Model):
 	category = CharField()
 	level = CharField()
+	partner = CharField()
+	results = CharField()
 	# tourney = ForeignKeyField(Tourney, backref='events') 
 	# user= ForeignKeyField(User, backref= 'events')	
 														
