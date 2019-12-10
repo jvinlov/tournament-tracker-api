@@ -33,7 +33,7 @@ def get_all_tourneys():
     return jsonify(data=all_tourneys, status={'code': 200, 'message': 'Success'})
 
 # Create/New Route (post)
-# @login_required <- look this up to save writing some code https://flask-login.readthedocs.io/en/latest/#flask_login.login_required
+@login_required
 @tourney.route('/', methods=["POST"])
 def create_tourney():
     ## see request payload analogous to req.body in express
@@ -49,11 +49,12 @@ def create_tourney():
     # print(payload['created_by'], 'created by current user id')
     
     tourney = models.Tourney.create(**payload) ## ** spread operator
-    # returns the id, see print(issue)
+    # returns the id, see print(tourney)
+    tourney.id = payload.tourney['id']
 
     ## see the object
     print(tourney)
-    # print(issue.__dict__)
+    # print(tourney.__dict__)
     ## Look at all the methods
     print(dir(tourney))
     # Change the model to a dict

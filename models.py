@@ -25,24 +25,11 @@ class Tourney(Model):
 		db_table = 'tourneys'
 		database = DATABASE
 
-class Event(Model):
-	category = CharField()
-	level = CharField()
-	partner = CharField()
-	results = CharField()
-	# tourney = ForeignKeyField(Tourney, backref='events') 
-	# user= ForeignKeyField(User, backref= 'events')	
-														
-	class Meta:
-		db_table = 'events'
-		database = DATABASE
-
 class User(UserMixin, Model):
 	name = CharField()
-	age = IntegerField()
 	gender = CharField()
 	rating = CharField()
-	events = ForeignKeyField(Event, backref= 'users')
+	# events = ForeignKeyField(Event, backref= 'users')
 	# has 'events' through events foreign key
 	email = CharField(unique=True)
 	password = CharField()
@@ -58,6 +45,20 @@ class User(UserMixin, Model):
 		db_table = 'users'
 		database = DATABASE
 
+
+
+
+class Event(Model):
+	category = CharField()
+	level = CharField()
+	partner = CharField()
+	results = CharField()
+	tourney = ForeignKeyField(Tourney, backref='events', null=True) 
+	user = ForeignKeyField(User, backref= 'events')	
+														
+	class Meta:
+		db_table = 'events'
+		database = DATABASE
 
 
 

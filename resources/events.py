@@ -43,24 +43,29 @@ def create_event():
     ## see request payload analogous to req.body in express
     payload = request.get_json() # flask gives us a request object (similar to req.body)
     print(type(payload), 'payload')
-    
-    #adding authorization step here...
-    # if not current_user.is_authenticated: # Check if user is authenticated and allowed to create a new issue
-    #     print(current_user)
-    #     return jsonify(data={}, status={'code': 401, 'message': 'You must be logged in to create an issue'})
+    tourney_id = 1
 
-    # payload['created_by'] = current_user.id # Set the 'created_by' of the issue to the current user
-    # print(payload['created_by'], 'created by current user id')
+    # Make sure to check if current_user is logged in
+    # Make sure passing credentials from REACT
+    #adding authorization step here...
+    if not current_user.is_authenticated: # Check if user is authenticated and allowed to create a new issue
+        print(current_user)
+        return jsonify(data={}, status={'code': 401, 'message': 'You must be logged in to create an event'})
+
+    # Add tourney to payload by using tourney.id
+    payload['tourney'] = tourney_id
+    payload['user'] = current_user.id # Set the event to the tourney
+    print(payload['tourney'], 'created by current user id')
    
     # print(payload, 'line 56')
     event = models.Event.create(**payload) ## ** spread operator
     # returns the id, see print(event)
 
     ## see the object
-    # print(event)
+    print(event)
     # print(event.__dict__)
     ## Look at all the methods
-    # print(dir(event))
+    print(dir(event))
     # Change the model to a dict
     print(model_to_dict(event), 'model to dict')
     event_dict = model_to_dict(event)
@@ -109,6 +114,8 @@ def update_event(id):
     #new code
     event_to_update.category = payload['category']
     event_to_update.level = payload['level']
+    event_to_update.partner = payload['partner']
+    event_to_update.results = payload['results']
 
     event_to_update.save()
 

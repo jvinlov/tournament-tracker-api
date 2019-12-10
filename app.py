@@ -18,12 +18,12 @@ app.secret_key = "WEFGLBEQWF" ##Need this to encode the session
 login_manager = LoginManager()#sets up the ability to set up the session
 login_manager.init_app(app)
 
-# @login_manager.user_loader
-# def load_user(user_id):
-#     try:
-#         return models.User.get(models.User.id ==user_id)
-#     except models.DoesNotExist:
-#         return None
+@login_manager.user_loader
+def load_user(user_id):
+    try:
+        return models.User.get(models.User.id ==user_id)
+    except models.DoesNotExist:
+        return None
 
 @app.before_request
 def before_request():
@@ -35,14 +35,14 @@ def after_request(response):
     g.db.close()
     return response
 
-# CORS(user, origins=['http://localhost:3000'], supports_credentials=True)
-# app.register_blueprint(user, url_prefix='/api/v1/users/')
+CORS(user, origins=['http://localhost:3000'], supports_credentials=True)
+app.register_blueprint(user, url_prefix='/api/v1/users/')
 
 CORS(tourney, origins=['http://localhost:3000', 'https://react-pb-tournament-tracker.herokuapp.com'], supports_credentials=True)
 app.register_blueprint(tourney, url_prefix='/api/v1/tourneys/')
 
-# CORS(event, origins=['http://localhost:3000'], supports_credentials=True)
-# app.register_blueprint(event, url_prefix='/api/v1/events/')
+CORS(event, origins=['http://localhost:3000'], supports_credentials=True)
+app.register_blueprint(event, url_prefix='/api/v1/events/')
 
 # # The default URL ends in / ("my-website.com/").
 # @app.route('/')
