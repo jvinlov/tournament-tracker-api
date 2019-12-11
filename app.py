@@ -35,13 +35,13 @@ def after_request(response):
     g.db.close()
     return response
 
-CORS(user, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(user, origins=['http://localhost:3000', 'https://react-pb-tournament-tracker.herokuapp.com'], supports_credentials=True)
 app.register_blueprint(user, url_prefix='/api/v1/users/')
 
 CORS(tourney, origins=['http://localhost:3000', 'https://react-pb-tournament-tracker.herokuapp.com'], supports_credentials=True)
 app.register_blueprint(tourney, url_prefix='/api/v1/tourneys/')
 
-CORS(event, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(event, origins=['http://localhost:3000', 'https://react-pb-tournament-tracker.herokuapp.com'], supports_credentials=True)
 app.register_blueprint(event, url_prefix='/api/v1/events/')
 
 # # The default URL ends in / ("my-website.com/").
