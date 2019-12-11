@@ -22,12 +22,14 @@ def get_all_tourneys():
     
     # print('Current User:',  current_user, "line 23", '\n')
     # Send all issues back to client. 
-    # IMPORTANT -> Use max_depth=0 if we want just the issue created_by id and not the entire
+  
     # http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#model_to_dict
     # all_issues = [model_to_dict(d, max_depth=0) for d in models.Issue.select()]
 
     # we want the entire object
     all_tourneys = [model_to_dict(tourney) for tourney in models.Tourney.select()]
+    # here's the new line - trying to get only users tourneys
+    # all_tourneys = [model_to_dict(event) for event in models.Event.select().where(models.Event.tourney == tourney_id)]
 
     print(all_tourneys, 'line 31', '\n')
     return jsonify(data=all_tourneys, status={'code': 200, 'message': 'Success'})
@@ -38,7 +40,7 @@ def get_all_tourneys():
 def create_tourney():
     ## see request payload analogous to req.body in express
     payload = request.get_json() # flask gives us a request object (similar to req.body)
-    print(payload, 'payload')
+    print(payload, 'payload, line41')
     
 
     # if not current_user.is_authenticated: # Check if user is authenticated and allowed to create a new issue
@@ -50,7 +52,7 @@ def create_tourney():
     
     tourney = models.Tourney.create(**payload) ## ** spread operator
     # returns the id, see print(tourney)
-    tourney.id = payload.tourney['id']
+    # tourney.id = payload.tourney['id']
 
     ## see the object
     print(tourney)

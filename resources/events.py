@@ -14,8 +14,8 @@ event = Blueprint('events', 'event')
 #attach restful CRUD routes to issue blueprint
 
 # Index Route (get)
-@event.route('/', methods=["GET"]) # GET is the default method
-def get_all_events():
+@event.route('/<tourney_id>', methods=["GET"]) # GET is the default method
+def get_all_events(tourney_id):
     # print(vars(request))
     # print(request.cookies)
     ## find the issues and change each one to a dictionary into a new array
@@ -30,7 +30,7 @@ def get_all_events():
     # all_issues = [model_to_dict(d, max_depth=0) for d in models.Issue.select()]
 
     # we want the entire object, so we are not going to use max_depth=0
-    all_events = [model_to_dict(event) for event in models.Event.select()]
+    all_events = [model_to_dict(event) for event in models.Event.select().where(models.Event.tourney == tourney_id)]
 
     print(all_events, 'line 35', '\n')
     return jsonify(data=all_events, status={'code': 200, 'message': 'Success'})
